@@ -2,7 +2,7 @@
 
 A Job Portal web application built using the MERN stack to connect job seekers with employers. The platform allows users to register, post jobs, search for jobs, and apply online.
 
-![Job Portal Banner](https://via.placeholder.com/1200x400.png?text=Job+Portal+MERN+Stack)
+![Job Portal Banner](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*PIg3Qg3CGap_i4xRWGAktw.png)
 
 ## Features
 
