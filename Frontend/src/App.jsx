@@ -1,10 +1,25 @@
 import React from "react";
+import Navbar from "./components/components_lite/Navbar";
+import Login from "./components/authentication/Login";
+import Register from "./components/authentication/Register";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./components/components_lite/Home";
 
+const appRouter = createBrowserRouter([
+  { path: "/", element: <Home /> },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+]);
 function App() {
   return (
     <div>
-      <h1 className="text-center text-blue-500">Job Portal</h1>
-      <h1 className="text-blue-500"></h1>{" "}
+      <RouterProvider router={appRouter}></RouterProvider>
     </div>
   );
 }
