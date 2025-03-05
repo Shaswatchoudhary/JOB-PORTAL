@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { USER_API_ENDPOINT } from "@/utils/data.js";
+import { USER_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
 
 const Register = () => {
@@ -22,15 +22,20 @@ const Register = () => {
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
-    {
-      /* Spread Operator used */
+  };
+
+  const changeFileHandler = (e) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      setInput({ ...input, file });
+    } else {
+      toast.error("Please upload a valid image file.");
     }
   };
-  const ChangeFilehandler = (e) => {
-    setInput({ ...input, file: e.target.files?.[0] });
-  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("fullname", input.fullname);
     formData.append("email", input.email);
@@ -40,27 +45,39 @@ const Register = () => {
     if (input.file) {
       formData.append("file", input.file);
     }
+
     try {
-      const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `http://localhost:5001/api/user/register`,
+        formData,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
       if (res.data.success) {
         navigate("/login");
         toast.success(res.data.message);
+      } else {
+        toast.error(
+          res.data.message || "Registration failed. Please try again."
+        );
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error:", error);
+
       const errorMessage = error.response
-        ? error.response.data.message
-        : "An unexpected error occurred.";
+        ? error.response.data.message || "An unexpected error occurred."
+        : "Network Error: Please check your internet connection.";
+
       toast.error(errorMessage);
     }
   };
 
   return (
     <div>
-      <Navbar></Navbar>
+      <Navbar />
       <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
           onSubmit={submitHandler}
@@ -69,27 +86,32 @@ const Register = () => {
           <h1 className="font-bold text-xl text-center text-blue-600 mb-5">
             Register
           </h1>
-          <div className="my-2 ">
+
+          <div className="my-2">
             <Label>Name</Label>
             <Input
               type="text"
               value={input.fullname}
               name="fullname"
               onChange={changeEventHandler}
-              placeholder="Smile jack"
-            ></Input>
+              placeholder="Smile Jack"
+              required
+            />
           </div>
-          <div className="my-2 ">
+
+          <div className="my-2">
             <Label>Email</Label>
             <Input
               type="email"
               value={input.email}
               name="email"
               onChange={changeEventHandler}
-              placeholder="Smilejack@gmail.com"
-            ></Input>
+              placeholder="smilejack@gmail.com"
+              required
+            />
           </div>
-          <div className="my-2 ">
+
+          <div className="my-2">
             <Label>Password</Label>
             <Input
               type="password"
@@ -97,9 +119,11 @@ const Register = () => {
               name="password"
               onChange={changeEventHandler}
               placeholder="********"
-            ></Input>
+              required
+            />
           </div>
-          <div className="my-2 ">
+
+          <div className="my-2">
             <Label>Phone Number</Label>
             <Input
               type="phoneNumber"
@@ -107,10 +131,12 @@ const Register = () => {
               name="phoneNumber"
               onChange={changeEventHandler}
               placeholder="+1234567890"
-            ></Input>
+              required
+            />
           </div>
+
           <div className="flex items-center justify-between">
-            <RadioGroup className="flex items-center gap-4 my-5 ">
+            <RadioGroup className="flex items-center gap-4 my-5">
               <div className="flex items-center space-x-2">
                 <Input
                   type="radio"
@@ -119,7 +145,8 @@ const Register = () => {
                   checked={input.role === "Student"}
                   onChange={changeEventHandler}
                   className="cursor-pointer"
-                ></Input>
+                  required
+                />
                 <Label htmlFor="r1">Student</Label>
               </div>
               <div className="flex items-center space-x-2">
@@ -130,27 +157,30 @@ const Register = () => {
                   checked={input.role === "Recruiter"}
                   onChange={changeEventHandler}
                   className="cursor-pointer"
-                ></Input>
+                  required
+                />
                 <Label htmlFor="r2">Recruiter</Label>
               </div>
             </RadioGroup>
           </div>
+
           <div className="flex items-center gap-2">
             <Label>Profile Photo</Label>
             <Input
               type="file"
               accept="image/*"
-              onChange={ChangeFilehandler}
+              onChange={changeFileHandler}
               className="cursor-pointer"
             />
           </div>
+
           <button
             type="submit"
             className="block w-full py-3 my-3 text-white bg-primary hover:bg-primary/90 rounded-md"
           >
             Register
           </button>
-          {/* already account then login */}
+
           <p className="text-gray-500 text-md my-2">
             Already have an account?{" "}
             <Link to="/login" className="text-blue-700 font-semibold">
