@@ -5,8 +5,9 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { USER_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/redux/authSlice";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -19,6 +20,8 @@ const Register = () => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((store) => store.auth);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -47,6 +50,7 @@ const Register = () => {
     }
 
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(
         `http://localhost:5001/api/user/register`,
         formData,
@@ -72,6 +76,8 @@ const Register = () => {
         : "Network Error: Please check your internet connection.";
 
       toast.error(errorMessage);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -173,13 +179,20 @@ const Register = () => {
               className="cursor-pointer"
             />
           </div>
-
-          <button
-            type="submit"
-            className="block w-full py-3 my-3 text-white bg-primary hover:bg-primary/90 rounded-md"
-          >
-            Register
-          </button>
+          {loading ? (
+            <div className="flex items-center justify-center my-10">
+              <div className="spinner-border text-blue-600" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="block w-full py-3 my-3 text-white bg-primary hover:bg-primary/90 rounded-md"
+            >
+              Register
+            </button>
+          )}
 
           <p className="text-gray-500 text-md my-2">
             Already have an account?{" "}
