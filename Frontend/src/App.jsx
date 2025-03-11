@@ -1,5 +1,4 @@
-import React from "react";
-import Navbar from "./components/components_lite/Navbar";
+
 import Login from "./components/authentication/Login";
 import Register from "./components/authentication/Register";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";

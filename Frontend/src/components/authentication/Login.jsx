@@ -3,7 +3,7 @@ import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,7 +40,7 @@ const Login = () => {
       );
       if (res.data.success) {
         navigate("/");
-        toast.success(res.data.message);
+        toast.success(res.data.message); //notification purpose
       }
     } catch (error) {
       console.error("Error:", error);

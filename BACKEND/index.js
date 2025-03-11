@@ -8,6 +8,7 @@ import companyRoute from "./routes/company.route.js";
 import jobRoute from "./routes/job.route.js";
 import applicationRoute from "./routes/application.route.js";
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -18,12 +19,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// CORS Configuration
+// CORS Configuration (Fix for frontend access issues)
 const corsOptions = {
-  origin: ["http://localhost:5174", "http://127.0.0.1:5174"], // Allow requests from your frontend
+  origin: [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+  ],
   methods: "GET, POST, PUT, DELETE, OPTIONS",
   allowedHeaders: "Content-Type, Authorization",
-  credentials: true, // Allow cookies
+  credentials: true, // Allow cookies and authentication headers
 };
 app.use(cors(corsOptions));
 
@@ -36,14 +42,17 @@ app.use("/api/company", companyRoute);
 app.use("/api/job", jobRoute);
 app.use("/api/application", applicationRoute);
 
-// Database Connection
-connectDB()
-  .then(() => {
+// Start the server after connecting to the database
+const startServer = async () => {
+  try {
+    await connectDB();
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on http://localhost:${PORT}`);
     });
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error("❌ Database connection failed:", err);
     process.exit(1);
-  });
+  }
+};
+
+startServer();

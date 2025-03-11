@@ -8,6 +8,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
+import { USER_API_ENDPOINT } from "@/utils/data";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -16,7 +17,7 @@ const Register = () => {
     password: "",
     role: "",
     phoneNumber: "",
-    file: "",
+    file: null,
   });
 
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Register = () => {
 
   const changeFileHandler = (e) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file && file.type.startsWith("image/*")) {
       setInput({ ...input, file });
     } else {
       toast.error("Please upload a valid image file.");
@@ -51,18 +52,13 @@ const Register = () => {
 
     try {
       dispatch(setLoading(true));
-      const res = await axios.post(
-        `http://localhost:5001/api/user/register`,
-        formData,
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+      const res = await axios.post(USER_API_ENDPOINT + "/register", formData, {
+        withCredentials: true, // CORS के लिए ज़रूरी
+      });
 
       if (res.data.success) {
-        navigate("/login");
         toast.success(res.data.message);
+        navigate("/login");
       } else {
         toast.error(
           res.data.message || "Registration failed. Please try again."
@@ -71,9 +67,12 @@ const Register = () => {
     } catch (error) {
       console.error("Error:", error);
 
-      const errorMessage = error.response
-        ? error.response.data.message || "An unexpected error occurred."
-        : "Network Error: Please check your internet connection.";
+      let errorMessage = "An unexpected error occurred.";
+      if (error.response) {
+        errorMessage = error.response.data.message || errorMessage;
+      } else if (error.message.includes("Network Error")) {
+        errorMessage = "Network Error: Please check your internet connection.";
+      }
 
       toast.error(errorMessage);
     } finally {
@@ -132,7 +131,7 @@ const Register = () => {
           <div className="my-2">
             <Label>Phone Number</Label>
             <Input
-              type="phoneNumber"
+              type="tel"
               value={input.phoneNumber}
               name="phoneNumber"
               onChange={changeEventHandler}
@@ -142,7 +141,7 @@ const Register = () => {
           </div>
 
           <div className="flex items-center justify-between">
-            <RadioGroup className="flex items-center gap-4 my-5">
+            <RadioGroup name="role" className="flex items-center gap-4 my-5">
               <div className="flex items-center space-x-2">
                 <Input
                   type="radio"
@@ -153,7 +152,7 @@ const Register = () => {
                   className="cursor-pointer"
                   required
                 />
-                <Label htmlFor="r1">Student</Label>
+                <Label>Student</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Input
@@ -165,7 +164,7 @@ const Register = () => {
                   className="cursor-pointer"
                   required
                 />
-                <Label htmlFor="r2">Recruiter</Label>
+                <Label>Recruiter</Label>
               </div>
             </RadioGroup>
           </div>
@@ -179,6 +178,7 @@ const Register = () => {
               className="cursor-pointer"
             />
           </div>
+
           {loading ? (
             <div className="flex items-center justify-center my-10">
               <div className="spinner-border text-blue-600" role="status">
