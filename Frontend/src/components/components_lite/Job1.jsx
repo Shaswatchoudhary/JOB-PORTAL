@@ -1,15 +1,20 @@
+import React from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Fix: Import useNavigate
 import { Button } from "@mui/material";
 import { Bookmark, Briefcase, MapPin, Clock } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { motion } from "framer-motion";
 
 const Job1 = () => {
+  const navigate = useNavigate(); // ✅ Fix: Define navigate function
+  const jobid = "ksjks"; // ✅ Fix: Use jobid instead of undefined job._id
+
   return (
     <motion.div
       className="w-full max-w-3xl p-6 rounded-lg shadow-lg bg-white border border-gray-300 cursor-pointer hover:shadow-blue-300 transition-all duration-300"
       whileHover={{ scale: 1.02 }}
       style={{
-        minHeight: "250px", // Ensuring a perfect rectangular shape
+        minHeight: "250px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -66,13 +71,14 @@ const Job1 = () => {
       </div>
 
       {/* Apply Button */}
-      <div className="mt-6 flex justify-end">
+      <div className="flex items-center gap-4 mt-4">
         <Button
-          variant="contained"
-          className="rounded-md px-5 py-2 bg-blue-600 text-white text-sm hover:bg-blue-700"
+          onClick={() => navigate(`/description/${jobid}`)} // ✅ Fix: Use jobid
+          variant="outlined"
         >
-          Apply Now
+          Details
         </Button>
+        <Button className="bg-[#7209b7] text-white">Save For Later</Button>
       </div>
     </motion.div>
   );

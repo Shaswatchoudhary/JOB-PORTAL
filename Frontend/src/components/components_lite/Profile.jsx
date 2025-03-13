@@ -6,6 +6,50 @@ import { Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "../ui/badge";
 import AppliedJob from "./AppliedJob";
 import EditProfileModal from "./EditProfileModal";
+import { motion } from "framer-motion"; // Motion for Animations
+
+const floatingLogos = [
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+    alt: "Google",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+    alt: "Facebook",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+    alt: "Amazon",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg",
+    alt: "Twitter",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/7/7e/LinkedIn_Logo.svg",
+    alt: "LinkedIn",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+    alt: "Microsoft",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg",
+    alt: "Instagram",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/6/64/YouTube_icon_dark.svg",
+    alt: "YouTube",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Netflix-Logo-PMS.png",
+    alt: "Netflix",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Apple_logo_black.svg",
+    alt: "Apple",
+  },
+];
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
@@ -25,10 +69,52 @@ const Profile = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="relative bg-gray-100 min-h-screen overflow-hidden">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 p-8 shadow-md hover:shadow-yellow-400 transition-all">
+      {/* Floating Background Logos */}
+      {floatingLogos.map((logo, index) => (
+        <motion.img
+          key={index}
+          src={logo.src}
+          alt={logo.alt}
+          className="absolute opacity-10 w-16 h-16"
+          initial={{
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+          }}
+          animate={{
+            x: [
+              Math.random() * -300,
+              Math.random() * 300,
+              Math.random() * -300,
+            ],
+            y: [
+              Math.random() * -300,
+              Math.random() * 300,
+              Math.random() * -300,
+            ],
+            rotate: [0, 360, 0],
+          }}
+          transition={{
+            duration: Math.random() * 6 + 4, // Faster animation (4-10 sec)
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+        />
+      ))}
+
+      {/* Profile Container */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="relative max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 p-8 shadow-md hover:shadow-yellow-400 transition-all z-10"
+      >
         {/* Profile Section */}
         <div className="flex justify-between">
           <div className="flex items-center gap-5">
@@ -44,8 +130,7 @@ const Profile = () => {
           </div>
           <Button
             onClick={() => setOpen(true)}
-            className="text-right"
-            variant="outline"
+            className="text-right bg-yellow-500 hover:bg-yellow-600 text-white shadow-md"
           >
             <Pen size={20} />
           </Button>
@@ -76,7 +161,12 @@ const Profile = () => {
         {/* Skills Section */}
         <div className="my-5">
           <h1 className="font-semibold text-lg text-gray-800">Skills:</h1>
-          <div className="flex flex-wrap gap-2 mt-2">
+          <motion.div
+            className="flex flex-wrap gap-2 mt-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
             {user.profile.skills.length > 0 ? (
               user.profile.skills.map((skill, index) => (
                 <Badge
@@ -89,13 +179,17 @@ const Profile = () => {
             ) : (
               <span className="text-gray-500">No Skills Added</span>
             )}
-          </div>
+          </motion.div>
         </div>
 
         {/* Resume Section */}
         <div className="my-5">
           <h1 className="font-semibold text-lg text-gray-800">Resume:</h1>
-          <div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
             {user.profile.resume ? (
               <a
                 target="_blank"
@@ -107,17 +201,22 @@ const Profile = () => {
             ) : (
               <span className="text-gray-500">No Resume Found</span>
             )}
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Applied Jobs Section */}
-      <div className="max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl p-8 shadow-md mt-5">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="relative max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl p-8 shadow-md mt-5 z-10"
+      >
         <h1 className="text-lg font-semibold text-gray-800 mb-4">
           Applied Jobs
         </h1>
         <AppliedJob />
-      </div>
+      </motion.div>
 
       {/* Edit Profile Modal */}
       <EditProfileModal open={open} setOpen={setOpen} />

@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { RadioGroup } from "../ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
 import { USER_API_ENDPOINT } from "@/utils/data";
+import { Sun, Moon, Upload } from "lucide-react";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -20,9 +20,19 @@ const Register = () => {
     file: null,
   });
 
+  const [darkMode, setDarkMode] = useState(false);
+  const [fileName, setFileName] = useState("No file chosen");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((store) => store.auth);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, [darkMode]);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -30,8 +40,9 @@ const Register = () => {
 
   const changeFileHandler = (e) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/*")) {
+    if (file && file.type.startsWith("image/")) {
       setInput({ ...input, file });
+      setFileName(file.name);
     } else {
       toast.error("Please upload a valid image file.");
     }
@@ -53,7 +64,7 @@ const Register = () => {
     try {
       dispatch(setLoading(true));
       const res = await axios.post(USER_API_ENDPOINT + "/register", formData, {
-        withCredentials: true, // CORS के लिए ज़रूरी
+        withCredentials: true,
       });
 
       if (res.data.success) {
@@ -81,126 +92,171 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div
+      className={`min-h-screen ${
+        darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"
+      }`}
+    >
       <Navbar />
-      <div className="flex items-center justify-center max-w-7xl mx-auto">
-        <form
-          onSubmit={submitHandler}
-          className="w-1/2 border border-gray-500 rounded-md p-4 my-10"
+      <div className="flex items-center justify-center max-w-7xl mx-auto px-4 py-10">
+        <div
+          className={`w-full max-w-lg ${
+            darkMode ? "bg-gray-800" : "bg-white"
+          } rounded-2xl shadow-xl overflow-hidden`}
         >
-          <h1 className="font-bold text-xl text-center text-blue-600 mb-5">
-            Register
-          </h1>
-
-          <div className="my-2">
-            <Label>Name</Label>
-            <Input
-              type="text"
-              value={input.fullname}
-              name="fullname"
-              onChange={changeEventHandler}
-              placeholder="Smile Jack"
-              required
-            />
-          </div>
-
-          <div className="my-2">
-            <Label>Email</Label>
-            <Input
-              type="email"
-              value={input.email}
-              name="email"
-              onChange={changeEventHandler}
-              placeholder="smilejack@gmail.com"
-              required
-            />
-          </div>
-
-          <div className="my-2">
-            <Label>Password</Label>
-            <Input
-              type="password"
-              value={input.password}
-              name="password"
-              onChange={changeEventHandler}
-              placeholder="********"
-              required
-            />
-          </div>
-
-          <div className="my-2">
-            <Label>Phone Number</Label>
-            <Input
-              type="tel"
-              value={input.phoneNumber}
-              name="phoneNumber"
-              onChange={changeEventHandler}
-              placeholder="+1234567890"
-              required
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <RadioGroup name="role" className="flex items-center gap-4 my-5">
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="radio"
-                  name="role"
-                  value="Student"
-                  checked={input.role === "Student"}
-                  onChange={changeEventHandler}
-                  className="cursor-pointer"
-                  required
-                />
-                <Label>Student</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="radio"
-                  name="role"
-                  value="Recruiter"
-                  checked={input.role === "Recruiter"}
-                  onChange={changeEventHandler}
-                  className="cursor-pointer"
-                  required
-                />
-                <Label>Recruiter</Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Label>Profile Photo</Label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={changeFileHandler}
-              className="cursor-pointer"
-            />
-          </div>
-
-          {loading ? (
-            <div className="flex items-center justify-center my-10">
-              <div className="spinner-border text-blue-600" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-            </div>
-          ) : (
+          {/* Theme Toggle */}
+          <div className="flex justify-end p-4">
             <button
-              type="submit"
-              className="block w-full py-3 my-3 text-white bg-primary hover:bg-primary/90 rounded-md"
+              onClick={() => setDarkMode(!darkMode)}
+              className={`p-2 rounded-full ${
+                darkMode
+                  ? "bg-gray-700 text-yellow-300"
+                  : "bg-gray-100 text-gray-800"
+              }`}
             >
-              Register
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-          )}
+          </div>
 
-          <p className="text-gray-500 text-md my-2">
-            Already have an account?{" "}
-            <Link to="/login" className="text-blue-700 font-semibold">
-              Login
-            </Link>
-          </p>
-        </form>
+          <div className="px-6 pb-8">
+            <div className="text-center mb-8">
+              <h1
+                className={`font-bold text-2xl ${
+                  darkMode ? "text-indigo-400" : "text-indigo-600"
+                }`}
+              >
+                Create Account
+              </h1>
+              <p
+                className={`mt-2 ${
+                  darkMode ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                Join our platform today
+              </p>
+            </div>
+
+            <form onSubmit={submitHandler} className="space-y-5">
+              {/* Full Name */}
+              <div>
+                <Label className="block mb-2">Full Name</Label>
+                <Input
+                  type="text"
+                  value={input.fullname}
+                  name="fullname"
+                  onChange={changeEventHandler}
+                  placeholder="John Doe"
+                  required
+                  className="w-full p-2 border rounded-lg"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <Label className="block mb-2">Email Address</Label>
+                <Input
+                  type="email"
+                  value={input.email}
+                  name="email"
+                  onChange={changeEventHandler}
+                  placeholder="yourname@example.com"
+                  required
+                  className="w-full p-2 border rounded-lg"
+                />
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <Label className="block mb-2">Phone Number</Label>
+                <Input
+                  type="tel"
+                  value={input.phoneNumber}
+                  name="phoneNumber"
+                  onChange={changeEventHandler}
+                  placeholder="Enter your phone number"
+                  required
+                  className="w-full p-2 border rounded-lg"
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <Label className="block mb-2">Password</Label>
+                <Input
+                  type="password"
+                  value={input.password}
+                  name="password"
+                  onChange={changeEventHandler}
+                  placeholder="••••••••"
+                  required
+                  className="w-full p-2 border rounded-lg"
+                />
+              </div>
+
+              {/* Profile Photo Upload */}
+              <div>
+                <Label className="block mb-2">Profile Photo</Label>
+                <div className="relative flex items-center border rounded-lg p-2 bg-white dark:bg-gray-800">
+                  {/* File Input */}
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    name="profilePhoto"
+                    onChange={changeFileHandler}
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                  />
+
+                  {/* File Name Display */}
+                  <span className="flex-grow text-gray-500 dark:text-gray-300 pl-2 truncate">
+                    {fileName}
+                  </span>
+
+                  {/* Upload Button */}
+                  <button
+                    type="button"
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  >
+                    <Upload size={18} />
+                    <span>Upload</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Role Selection */}
+              <div>
+                <Label className="block mb-2">I am a:</Label>
+                <select
+                  name="role"
+                  value={input.role}
+                  onChange={changeEventHandler}
+                  className="w-full p-2 border rounded-lg"
+                >
+                  <option value="">Select Role</option>
+                  <option value="Student">Student</option>
+                  <option value="Recruiter">Recruiter</option>
+                </select>
+              </div>
+
+              {/* Submit Button */}
+              <div>
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-indigo-600 text-white rounded-lg"
+                >
+                  {loading ? "Creating Account..." : "Create Account"}
+                </button>
+              </div>
+            </form>
+
+            {/* Already Have an Account? */}
+            <p className="mt-4 text-center">
+              Already have an account?{" "}
+              <Link to="/login" className="text-indigo-500 hover:underline">
+                Login
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

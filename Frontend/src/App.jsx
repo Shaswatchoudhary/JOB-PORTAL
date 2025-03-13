@@ -7,49 +7,25 @@ import TermsOfService from "./components/components_lite/TermsOfService";
 import PrivacyPolicy from "./components/components_lite/PrivacyPolicy";
 import Browse from "./components/components_lite/Browse";
 import Profile from "./components/components_lite/Profile";
+import Description from "./components/components_lite/Description"; // ✅ Ensure correct file extension
 
 const appRouter = createBrowserRouter([
   { path: "/", element: <Home /> },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
-  {
-    path: "/profile",
-    element: <Profile />,
-  },
-  // Add more routes here
-
-  {
-    path: "/TermsofService",
-    element: <TermsOfService />,
-  },
-  {
-    path: "/PrivacyPolicy",
-    element: <PrivacyPolicy />,
-  },
-  {
-    path: "/Jobs",
-    element: <Jobs />,
-  },
-  {
-    path: "/Home",
-    element: <Home />,
-  },
-  {
-    path: "/Browse",
-    element: <Browse></Browse>,
-  },
+  { path: "/login", element: <Login /> },
+  { path: "/register", element: <Register /> },
+  { path: "/description/:id", element: <Description /> }, // ✅ Corrected path
+  { path: "/profile", element: <Profile /> },
+  { path: "/TermsofService", element: <TermsOfService /> },
+  { path: "/PrivacyPolicy", element: <PrivacyPolicy /> },
+  { path: "/Jobs", element: <Jobs /> },
+  { path: "/Home", element: <Home /> },
+  { path: "/Browse", element: <Browse /> },
 ]);
 
 function App() {
   return (
     <div>
-      <RouterProvider router={appRouter}></RouterProvider>
+      <RouterProvider router={appRouter} />
     </div>
   );
 }
