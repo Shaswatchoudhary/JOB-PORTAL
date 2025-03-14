@@ -2,160 +2,84 @@ import React, { useState } from "react";
 import Navbar from "./Navbar";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { Contact, Mail, Pen } from "lucide-react";
+import { Contact, Mail, Pen, Download } from "lucide-react";
 import { Badge } from "../ui/badge";
 import AppliedJob from "./AppliedJob";
 import EditProfileModal from "./EditProfileModal";
-import { motion } from "framer-motion"; // Motion for Animations
-
-const floatingLogos = [
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
-    alt: "Google",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
-    alt: "Facebook",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
-    alt: "Amazon",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg",
-    alt: "Twitter",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/7/7e/LinkedIn_Logo.svg",
-    alt: "LinkedIn",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
-    alt: "Microsoft",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg",
-    alt: "Instagram",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/6/64/YouTube_icon_dark.svg",
-    alt: "YouTube",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Netflix-Logo-PMS.png",
-    alt: "Netflix",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Apple_logo_black.svg",
-    alt: "Apple",
-  },
-];
+import { useSelector } from "react-redux";
+import useGetAppliedJobs from "../hooks/useGetAppliedJobs";
+import { motion } from "framer-motion";
 
 const Profile = () => {
+  useGetAppliedJobs();
   const [open, setOpen] = useState(false);
-
-  // Dummy User Data for Frontend Testing
-  const user = {
-    fullname: "Shaswat",
-    email: "shaswat@example.com",
-    phoneNumber: "+91 9876543210",
-    profile: {
-      profilePhoto: "https://github.com/shadcn.png",
-      bio: "Software Engineer | React Developer",
-      skills: ["React", "JavaScript", "Node.js", "Tailwind CSS"],
-      resume: "https://example.com/resume.pdf",
-      resumeOriginalName: "shaswat_Resume.pdf",
-    },
-  };
+  const { user } = useSelector((store) => store.auth);
+  const profile = user?.profile ?? {};
 
   return (
-    <div className="relative bg-gray-100 min-h-screen overflow-hidden">
+    <div className="relative bg-gray-100 min-h-screen">
       <Navbar />
-
-      {/* Floating Background Logos */}
-      {floatingLogos.map((logo, index) => (
-        <motion.img
-          key={index}
-          src={logo.src}
-          alt={logo.alt}
-          className="absolute opacity-10 w-16 h-16"
-          initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-          }}
-          animate={{
-            x: [
-              Math.random() * -300,
-              Math.random() * 300,
-              Math.random() * -300,
-            ],
-            y: [
-              Math.random() * -300,
-              Math.random() * 300,
-              Math.random() * -300,
-            ],
-            rotate: [0, 360, 0],
-          }}
-          transition={{
-            duration: Math.random() * 6 + 4, // Faster animation (4-10 sec)
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-          }}
-        />
-      ))}
 
       {/* Profile Container */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl my-5 p-8 shadow-md hover:shadow-yellow-400 transition-all z-10"
+        className="max-w-4xl mx-auto bg-white border border-gray-300 rounded-2xl my-5 p-8 shadow-lg hover:shadow-yellow-500 transition-all transform hover:-translate-y-1"
       >
-        {/* Profile Section */}
-        <div className="flex justify-between">
-          <div className="flex items-center gap-5">
-            <Avatar className="cursor-pointer h-24 w-24 border-2 border-yellow-400">
-              <AvatarImage src={user.profile.profilePhoto} alt="User Avatar" />
+        {/* Profile Header */}
+        <div className="flex justify-between items-center">
+          <motion.div
+            className="flex items-center gap-5"
+            whileHover={{ scale: 1.02 }}
+          >
+            <Avatar className="cursor-pointer h-24 w-24 border-2 border-yellow-400 shadow-md">
+              <AvatarImage
+                src={profile.profilePhoto ?? "/default-avatar.png"}
+                alt="User Avatar"
+              />
             </Avatar>
             <div>
-              <h1 className="text-xl font-semibold text-gray-800">
-                {user.fullname}
+              <h1 className="text-2xl font-semibold text-gray-800">
+                {user?.fullname ?? "No Name Available"}
               </h1>
-              <p className="text-gray-600">{user.profile.bio}</p>
+              <p className="text-gray-600">{profile.bio ?? "No bio added"}</p>
             </div>
-          </div>
+          </motion.div>
           <Button
             onClick={() => setOpen(true)}
-            className="text-right bg-yellow-500 hover:bg-yellow-600 text-white shadow-md"
+            className="text-right bg-yellow-500 hover:bg-yellow-600 text-white shadow-md transition-all"
           >
             <Pen size={20} />
           </Button>
         </div>
 
-        {/* Contact Info */}
-        <div className="my-5">
-          <div className="flex items-center gap-3 my-2">
-            <Mail size={18} />
+        {/* Contact Details */}
+        <div className="my-5 space-y-3">
+          <motion.div
+            className="flex items-center gap-3 p-3 rounded-lg bg-gray-100 shadow-md hover:shadow-yellow-400 transition-all"
+            whileHover={{ scale: 1.02 }}
+          >
+            <Mail className="text-blue-500" />
             <a
-              href={`mailto:${user.email}`}
+              href={`mailto:${user?.email ?? ""}`}
               className="text-blue-600 hover:underline"
             >
-              {user.email}
+              {user?.email ?? "Email not available"}
             </a>
-          </div>
-          <div className="flex items-center gap-3 my-2">
-            <Contact size={18} />
+          </motion.div>
+          <motion.div
+            className="flex items-center gap-3 p-3 rounded-lg bg-gray-100 shadow-md hover:shadow-yellow-400 transition-all"
+            whileHover={{ scale: 1.02 }}
+          >
+            <Contact className="text-green-500" />
             <a
-              href={`tel:${user.phoneNumber}`}
+              href={`tel:${user?.phoneNumber ?? ""}`}
               className="text-blue-600 hover:underline"
             >
-              {user.phoneNumber}
+              {user?.phoneNumber ?? "Phone number not available"}
             </a>
-          </div>
+          </motion.div>
         </div>
 
         {/* Skills Section */}
@@ -167,13 +91,13 @@ const Profile = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            {user.profile.skills.length > 0 ? (
-              user.profile.skills.map((skill, index) => (
+            {profile.skills?.length > 0 ? (
+              profile.skills.map((item, index) => (
                 <Badge
                   key={index}
-                  className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full"
+                  className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full shadow-md hover:shadow-lg transition-all"
                 >
-                  {skill}
+                  {item}
                 </Badge>
               ))
             ) : (
@@ -186,17 +110,16 @@ const Profile = () => {
         <div className="my-5">
           <h1 className="font-semibold text-lg text-gray-800">Resume:</h1>
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+            className="flex items-center gap-3 p-3 bg-gray-100 rounded-lg shadow-md hover:shadow-yellow-400 transition-all"
+            whileHover={{ scale: 1.02 }}
           >
-            {user.profile.resume ? (
+            {profile.resume ? (
               <a
-                target="_blank"
-                href={user.profile.resume}
-                className="text-green-600 hover:underline cursor-pointer"
+                href={profile.resume}
+                download={profile.resumeOriginalName ?? "Resume.pdf"}
+                className="text-green-600 hover:underline flex items-center gap-2"
               >
-                Download {user.profile.resumeOriginalName}
+                <Download size={18} /> {profile.resumeOriginalName ?? "Resume"}
               </a>
             ) : (
               <span className="text-gray-500">No Resume Found</span>
@@ -207,10 +130,10 @@ const Profile = () => {
 
       {/* Applied Jobs Section */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className="relative max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl p-8 shadow-md mt-5 z-10"
+        className="max-w-4xl mx-auto bg-white border border-gray-300 rounded-2xl p-8 shadow-lg mt-5 hover:shadow-yellow-500 transition-all transform hover:-translate-y-1"
       >
         <h1 className="text-lg font-semibold text-gray-800 mb-4">
           Applied Jobs

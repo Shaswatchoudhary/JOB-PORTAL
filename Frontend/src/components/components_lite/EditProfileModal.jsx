@@ -8,23 +8,70 @@ import {
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
+import { USER_API_ENDPOINT } from "@/utils/data";
+import { setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
-import { motion } from "framer-motion";
 
 const EditProfileModal = ({ open, setOpen }) => {
   const [loading, setLoading] = useState(false);
+  const { user } = useSelector((store) => store.auth);
 
   const [input, setInput] = useState({
-    fullname: "John Doe",
-    email: "johndoe@gmail.com",
-    phoneNumber: "+1234567890",
-    bio: "A passionate software developer.",
-    skills: "React, JavaScript, Node.js",
-    file: null,
+    fullname: user?.fullname, // Corrected from fullnamename to fullname
+    email: user?.email,
+    phoneNumber: user?.phoneNumber,
+    bio: user?.profile?.bio,
+    skills: user?.profile?.skills?.map((skill) => skill),
+    file: user?.profile?.resume,
   });
+  const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("fullname", input.fullname);
+    formData.append("email", input.email);
+    formData.append("phoneNumber", input.phoneNumber);
+    formData.append("bio", input.bio);
+    formData.append("skills", input.skills);
+
+    if (input.file) {
+      formData.append("file", input.file);
+    }
+
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        USER_API_ENDPOINT + "/profile/update",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+      if (res.data.success) {
+        // dispatch(setUser(res.data.user));
+        dispatch(setUser({ ...res.data.user, skills: input.skills }));
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+    setOpen(false);
+
+    console.log(input);
   };
 
   const FileChangehandler = (e) => {
@@ -32,167 +79,116 @@ const EditProfileModal = ({ open, setOpen }) => {
     setInput({ ...input, file });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      console.log(input);
-      setLoading(false);
-      setOpen(false);
-    }, 2000);
-  };
-
   return (
-    <Dialog open={open}>
-      <DialogContent
-        className="sm:max-w-[500px] bg-white rounded-lg shadow-2xl"
-        onInteractOutside={() => setOpen(false)}
-      >
-        <DialogHeader>
-          <DialogTitle className="text-gray-800 text-xl font-bold">
-            ✨ Edit Profile
-          </DialogTitle>
-        </DialogHeader>
-
-        {/* Form for Editing Profile */}
-        <motion.form
-          onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+    <div>
+      <Dialog open={open}>
+        <DialogContent
+          className="sm:max-w-[500px]"
+          onInteractOutside={() => setOpen(false)}
         >
-          <div className="grid gap-4 py-4">
-            {/* Name */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="grid grid-cols-4 items-center gap-4"
-            >
-              <Label htmlFor="name" className="text-right font-medium">
-                Name
-              </Label>
-              <input
-                type="text"
-                id="name"
-                value={input.fullname}
-                name="fullname"
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 transition-all"
-              />
-            </motion.div>
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+          </DialogHeader>
+          {/* Form for editing profile */}
+          <form onSubmit={handleFileChange}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <input
+                  type="text"
+                  id="name"
+                  value={input.fullname}
+                  name="name"
+                  onChange={changeEventHandler}
+                  className="col-span-3 border border-gray-300 rounded-md p-2"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">
+                  Email
+                </Label>
+                <input
+                  type="email"
+                  id="email"
+                  value={input.email}
+                  name="email"
+                  onChange={changeEventHandler}
+                  className="col-span-3 border border-gray-300 rounded-md p-2"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="phone" className="text-right">
+                  Phone
+                </Label>
+                <input
+                  type="tel"
+                  id="phone"
+                  value={input.phoneNumber} // Ensure this is correctly set
+                  name="phoneNumber" // Ensure this matches the expected key
+                  onChange={changeEventHandler}
+                  className="col-span-3 border border-gray-300 rounded-md p-2"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="bio" className="text-right">
+                  Bio
+                </Label>
+                <input
+                  type="bio"
+                  id="bio"
+                  value={input.bio}
+                  name="bio"
+                  onChange={changeEventHandler}
+                  className="col-span-3 border border-gray-300 rounded-md p-2"
+                />
+              </div>
+              {/* skills */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="skills" className="text-right">
+                  Skills
+                </Label>
+                <input
+                  id="skills"
+                  name="skills"
+                  value={input.skills}
+                  onChange={changeEventHandler}
+                  className="col-span-3 border border-gray-300 rounded-md p-2"
+                />
+              </div>
+              {/* Resume file upload */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="file" className="text-right">
+                  Resume
+                </Label>
+                <input
+                  type="file"
+                  id="file"
+                  name="file"
+                  accept="application/pdf"
+                  onChange={FileChangehandler}
+                  className="col-span-3 border border-gray-300 rounded-md p-2"
+                />
+              </div>
+            </div>
 
-            {/* Email */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="grid grid-cols-4 items-center gap-4"
-            >
-              <Label htmlFor="email" className="text-right font-medium">
-                Email
-              </Label>
-              <input
-                type="email"
-                id="email"
-                value={input.email}
-                name="email"
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 transition-all"
-              />
-            </motion.div>
-
-            {/* Phone */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="grid grid-cols-4 items-center gap-4"
-            >
-              <Label htmlFor="phone" className="text-right font-medium">
-                Phone
-              </Label>
-              <input
-                type="tel"
-                id="phone"
-                value={input.phoneNumber}
-                name="phoneNumber"
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 transition-all"
-              />
-            </motion.div>
-
-            {/* Bio */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="grid grid-cols-4 items-center gap-4"
-            >
-              <Label htmlFor="bio" className="text-right font-medium">
-                Bio
-              </Label>
-              <input
-                type="text"
-                id="bio"
-                value={input.bio}
-                name="bio"
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 transition-all"
-              />
-            </motion.div>
-
-            {/* Skills */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="grid grid-cols-4 items-center gap-4"
-            >
-              <Label htmlFor="skills" className="text-right font-medium">
-                Skills
-              </Label>
-              <input
-                id="skills"
-                name="skills"
-                value={input.skills}
-                onChange={changeEventHandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 transition-all"
-              />
-            </motion.div>
-
-            {/* Resume Upload */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="grid grid-cols-4 items-center gap-4"
-            >
-              <Label htmlFor="file" className="text-right font-medium">
-                Resume
-              </Label>
-              <input
-                type="file"
-                id="file"
-                name="file"
-                accept="application/pdf"
-                onChange={FileChangehandler}
-                className="col-span-3 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 transition-all"
-              />
-            </motion.div>
-          </div>
-
-          {/* Footer Buttons */}
-          <DialogFooter>
-            {loading ? (
-              <Button
-                disabled
-                className="w-full my-4 flex items-center justify-center"
-              >
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait...
-              </Button>
-            ) : (
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Button type="submit" className="w-full my-4">
-                  Save Changes
+            <DialogFooter>
+              {loading ? (
+                <Button className="w-full my-4">
+                  {" "}
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
                 </Button>
-              </motion.div>
-            )}
-          </DialogFooter>
-        </motion.form>
-      </DialogContent>
-    </Dialog>
+              ) : (
+                <Button type="submit" className="w-full my-4">
+                  Save
+                </Button>
+              )}
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 
