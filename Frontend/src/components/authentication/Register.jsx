@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -18,8 +18,8 @@ const Register = () => {
     role: "",
     phoneNumber: "",
     file: null,
+    profilePhoto: null,
   });
-
   const [darkMode, setDarkMode] = useState(false);
   const [fileName, setFileName] = useState("No file chosen");
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ const Register = () => {
     formData.append("password", input.password);
     formData.append("role", input.role);
     if (input.file) {
-      formData.append("file", input.file);
+      formData.append("profilePhoto", input.file);
     }
 
     try {

@@ -1,6 +1,6 @@
 import express from "express";
+import { isAuthenticated } from "../middleware/isAuthenticated.js"; // ✅ सही इंपोर्ट
 
-import authenticateToken from "../middleware/isAuthenticated.js";
 import {
   getAllCompanies,
   getCompanyById,
@@ -10,9 +10,9 @@ import {
 
 const router = express.Router();
 
-router.route("/register").post(authenticateToken, registerCompany);
-router.route("/get").get(authenticateToken, getAllCompanies);
-router.route("/get/:id").get(authenticateToken, getCompanyById);
-router.route("/update/:id").put(authenticateToken, updateCompany);
+router.route("/register").post(isAuthenticated, registerCompany);
+router.route("/get").get(isAuthenticated, getAllCompanies);
+router.route("/get/:id").get(isAuthenticated, getCompanyById);
+router.route("/update/:id").put(isAuthenticated, updateCompany);
 
 export default router;
