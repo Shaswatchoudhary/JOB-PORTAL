@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom"; // ✅ Fix: Import useNavigate
 import { Button } from "@mui/material";
 import { Bookmark, Briefcase, MapPin, Clock } from "lucide-react";
