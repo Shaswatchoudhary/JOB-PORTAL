@@ -1,4 +1,4 @@
-export const USER_API_ENDPOINT = "https://job-caix.onrender.com//api/user";
+export const USER_API_ENDPOINT = "https://job-caix.onrender.com/api/user";
 export const JOB_API_ENDPOINT = "https://job-caix.onrender.com/api/job";
 export const APPLICATION_API_ENDPOINT =
   "https://job-caix.onrender.com/api/application";
