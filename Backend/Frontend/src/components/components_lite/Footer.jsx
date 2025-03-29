@@ -23,7 +23,7 @@ const Footer = () => {
               Email
             </a>
             <a
-              href="https://www.linkedin.com/in/shaswatchoudhary/"
+              href="https://www.linkedin.com/in/shaswat-choudhary-6a36b824b/"
               target="_blank"
               rel="noopener noreferrer"
               style={{ marginRight: "15px" }}
@@ -31,7 +31,7 @@ const Footer = () => {
               LinkedIn
             </a>
             <a
-              href="https://github.com/shaswat"
+              href="https://github.com/Shaswatchoudhary"
               target="_blank"
               rel="noopener noreferrer"
             >
