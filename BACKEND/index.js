@@ -35,11 +35,11 @@ app.use("/api/application", applicationRoute);
 
 //--------------Code for development--------------------------------
 
-if (process.env.NODE_ENV === "production") {
-  const dirpath = path.resolve();
+if (process.env.Node_ENV === "production") {
+  const dirPath = path.resolve();
   app.use(express.static("./Frontend/dist"));
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(dirpath, "./Frontend/dist", "index.html"));
+    res.sendFile(path.resolve(dirPath, "./Frontend/dist", "index.html"));
   });
 }
 
