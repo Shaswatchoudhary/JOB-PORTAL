@@ -1,57 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Navbar from "./Navbar";
 import Job1 from "./Job1";
-
-const jobList = [
-  { id: 1, title: "Software Engineer", company: "Google" },
-  { id: 2, title: "Data Scientist", company: "Amazon" },
-  { id: 3, title: "Frontend Developer", company: "Facebook" },
-  { id: 4, title: "Backend Developer", company: "Netflix" },
-  { id: 5, title: "UI/UX Designer", company: "Microsoft" },
-  { id: 6, title: "Marketing Manager", company: "Apple" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchedQuery } from "@/redux/jobSlice";
+import useGetAllJobs from "@/hooks/useGetAllJobs";
+import { motion } from "framer-motion";
 
 const Browse = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  useGetAllJobs();
+  const { allJobs } = useSelector((store) => store.job);
+  const dispatch = useDispatch();
 
-  // Job Search Logic
-  const filteredJobs = jobList.filter(
-    (job) =>
-      job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.company.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    return () => {
+      dispatch(setSearchedQuery(""));
+    };
+  }, [dispatch]);
 
   return (
-    <div>
+    <div className="bg-gray-50 min-h-screen">
       <Navbar />
-      <div className="container mx-auto px-4">
-        <h1 className="text-2xl font-bold my-4">Browse Jobs</h1>
+      <div className="max-w-7xl mx-auto my-10 px-4 md:px-8">
+        <h1 className="font-bold text-3xl my-10 text-gray-800 text-center">
+          <span className="text-[#6A38C2]">Search Results:</span>{" "}
+          {allJobs.length} Jobs Found
+        </h1>
 
-        {/* Search Bar */}
-        <div className="mb-6 flex items-center bg-gray-100 rounded-lg p-3 shadow-md">
-          <input
-            type="text"
-            placeholder="Search Jobs (e.g. Developer, Google)"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-2 bg-transparent outline-none text-gray-800"
-          />
-        </div>
-
-        {/* Job Results */}
-        <div>
-          <h2 className="text-lg font-semibold my-2">
-            Search Results: {filteredJobs.length}
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredJobs.length > 0 ? (
-              filteredJobs.map((job) => <Job1 key={job.id} job={job} />)
-            ) : (
-              <p className="text-gray-500">No jobs found!</p>
-            )}
+        {/* Job Cards */}
+        {allJobs.length === 0 ? (
+          <div className="text-center text-gray-500 py-10">
+            <p className="text-lg font-medium">No Jobs Available</p>
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {allJobs.map((job) => (
+              <motion.div
+                key={job._id}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg cursor-pointer border border-gray-200"
+              >
+                <Job1 job={job} />
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

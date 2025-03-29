@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components_lite/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { RadioGroup } from "../ui/radio-group";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { USER_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/authSlice";
-import { USER_API_ENDPOINT } from "@/utils/data";
-import { Sun, Moon, Upload } from "lucide-react";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -17,246 +17,191 @@ const Register = () => {
     password: "",
     role: "",
     phoneNumber: "",
-    file: null,
-    profilePhoto: null,
+    pancard: "",
+    adharcard: "",
+    file: "",
   });
-  const [darkMode, setDarkMode] = useState(false);
-  const [fileName, setFileName] = useState("No file chosen");
+
   const navigate = useNavigate();
+
   const dispatch = useDispatch();
+
   const { loading } = useSelector((store) => store.auth);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark-mode");
-    } else {
-      document.body.classList.remove("dark-mode");
-    }
-  }, [darkMode]);
-
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
-
-  const changeFileHandler = (e) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      setInput({ ...input, file });
-      setFileName(file.name);
-    } else {
-      toast.error("Please upload a valid image file.");
-    }
+  const ChangeFilehandler = (e) => {
+    setInput({ ...input, file: e.target.files?.[0] });
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("fullname", input.fullname);
     formData.append("email", input.email);
-    formData.append("phoneNumber", input.phoneNumber);
     formData.append("password", input.password);
+    formData.append("pancard", input.pancard);
+    formData.append("adharcard", input.adharcard);
     formData.append("role", input.role);
+    formData.append("phoneNumber", input.phoneNumber);
     if (input.file) {
-      formData.append("profilePhoto", input.file);
+      formData.append("file", input.file);
     }
-
     try {
       dispatch(setLoading(true));
-      const res = await axios.post(USER_API_ENDPOINT + "/register", formData, {
+      const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
-
       if (res.data.success) {
-        toast.success(res.data.message);
         navigate("/login");
-      } else {
-        toast.error(
-          res.data.message || "Registration failed. Please try again."
-        );
+        toast.success(res.data.message);
       }
     } catch (error) {
-      console.error("Error:", error);
-
-      let errorMessage = "An unexpected error occurred.";
-      if (error.response) {
-        errorMessage = error.response.data.message || errorMessage;
-      } else if (error.message.includes("Network Error")) {
-        errorMessage = "Network Error: Please check your internet connection.";
-      }
-
+      console.log(error);
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "An unexpected error occurred.";
       toast.error(errorMessage);
     } finally {
       dispatch(setLoading(false));
     }
   };
 
+  const { user } = useSelector((store) => store.auth);
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, []);
   return (
-    <div
-      className={`min-h-screen ${
-        darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-800"
-      }`}
-    >
-      <Navbar />
-      <div className="flex items-center justify-center max-w-7xl mx-auto px-4 py-10">
-        <div
-          className={`w-full max-w-lg ${
-            darkMode ? "bg-gray-800" : "bg-white"
-          } rounded-2xl shadow-xl overflow-hidden`}
+    <div>
+      <Navbar></Navbar>
+      <div className="flex items-center justify-center max-w-7xl mx-auto">
+        <form
+          onSubmit={submitHandler}
+          className="w-1/2 border border-gray-500 rounded-md p-4 my-10"
         >
-          {/* Theme Toggle */}
-          <div className="flex justify-end p-4">
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className={`p-2 rounded-full ${
-                darkMode
-                  ? "bg-gray-700 text-yellow-300"
-                  : "bg-gray-100 text-gray-800"
-              }`}
-            >
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
+          <h1 className="font-bold text-xl mb-5 text-center text-blue-600">
+            Register
+          </h1>
+          <div className="my-2">
+            <Label>Fullname</Label>
+            <Input
+              type="text"
+              value={input.fullname}
+              name="fullname"
+              onChange={changeEventHandler}
+              placeholder="John Doe"
+            ></Input>
           </div>
-
-          <div className="px-6 pb-8">
-            <div className="text-center mb-8">
-              <h1
-                className={`font-bold text-2xl ${
-                  darkMode ? "text-indigo-400" : "text-indigo-600"
-                }`}
-              >
-                Create Account
-              </h1>
-              <p
-                className={`mt-2 ${
-                  darkMode ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Join our platform today
-              </p>
-            </div>
-
-            <form onSubmit={submitHandler} className="space-y-5">
-              {/* Full Name */}
-              <div>
-                <Label className="block mb-2">Full Name</Label>
+          <div className="my-2">
+            <Label>Email</Label>
+            <Input
+              type="email"
+              value={input.email}
+              name="email"
+              onChange={changeEventHandler}
+              placeholder="johndoe@gmail.com"
+            ></Input>
+          </div>
+          <div className="my-2">
+            <Label>Password</Label>
+            <Input
+              type="password"
+              value={input.password}
+              name="password"
+              onChange={changeEventHandler}
+              placeholder="********"
+            ></Input>
+          </div>
+          <div>
+            <Label>PAN Card Number</Label>
+            <Input
+              type="text"
+              value={input.pancard}
+              name="pancard"
+              onChange={changeEventHandler}
+              placeholder="ABCDEF1234G"
+            ></Input>
+          </div>
+          <div>
+            <Label>Adhar Card Number</Label>
+            <Input
+              type="text"
+              value={input.adharcard}
+              name="adharcard"
+              onChange={changeEventHandler}
+              placeholder="123456789012"
+            ></Input>
+          </div>
+          <div className="my-2">
+            <Label>Phone Number</Label>
+            <Input
+              type="tel"
+              value={input.phoneNumber}
+              name="phoneNumber"
+              onChange={changeEventHandler}
+              placeholder="+1234567890"
+            ></Input>
+          </div>
+          <div className="flex items-center justify-between">
+            <RadioGroup className="flex items-center gap-4 my-5 ">
+              <div className="flex items-center space-x-2">
                 <Input
-                  type="text"
-                  value={input.fullname}
-                  name="fullname"
-                  onChange={changeEventHandler}
-                  placeholder="John Doe"
-                  required
-                  className="w-full p-2 border rounded-lg"
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <Label className="block mb-2">Email Address</Label>
-                <Input
-                  type="email"
-                  value={input.email}
-                  name="email"
-                  onChange={changeEventHandler}
-                  placeholder="yourname@example.com"
-                  required
-                  className="w-full p-2 border rounded-lg"
-                />
-              </div>
-
-              {/* Phone Number */}
-              <div>
-                <Label className="block mb-2">Phone Number</Label>
-                <Input
-                  type="tel"
-                  value={input.phoneNumber}
-                  name="phoneNumber"
-                  onChange={changeEventHandler}
-                  placeholder="Enter your phone number"
-                  required
-                  className="w-full p-2 border rounded-lg"
-                />
-              </div>
-
-              {/* Password */}
-              <div>
-                <Label className="block mb-2">Password</Label>
-                <Input
-                  type="password"
-                  value={input.password}
-                  name="password"
-                  onChange={changeEventHandler}
-                  placeholder="••••••••"
-                  required
-                  className="w-full p-2 border rounded-lg"
-                />
-              </div>
-
-              {/* Profile Photo Upload */}
-              <div>
-                <Label className="block mb-2">Profile Photo</Label>
-                <div className="relative flex items-center border rounded-lg p-2 bg-white dark:bg-gray-800">
-                  {/* File Input */}
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    name="profilePhoto"
-                    onChange={changeFileHandler}
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                  />
-
-                  {/* File Name Display */}
-                  <span className="flex-grow text-gray-500 dark:text-gray-300 pl-2 truncate">
-                    {fileName}
-                  </span>
-
-                  {/* Upload Button */}
-                  <button
-                    type="button"
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
-                  >
-                    <Upload size={18} />
-                    <span>Upload</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Role Selection */}
-              <div>
-                <Label className="block mb-2">I am a:</Label>
-                <select
+                  type="radio"
                   name="role"
-                  value={input.role}
+                  value="Student"
+                  checked={input.role === "Student"}
                   onChange={changeEventHandler}
-                  className="w-full p-2 border rounded-lg"
-                >
-                  <option value="">Select Role</option>
-                  <option value="Student">Student</option>
-                  <option value="Recruiter">Recruiter</option>
-                </select>
+                  className="cursor-pointer"
+                />
+                <Label htmlFor="r1">Student</Label>
               </div>
-
-              {/* Submit Button */}
-              <div>
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-indigo-600 text-white rounded-lg"
-                >
-                  {loading ? "Creating Account..." : "Create Account"}
-                </button>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="radio"
+                  name="role"
+                  value="Recruiter"
+                  checked={input.role === "Recruiter"}
+                  onChange={changeEventHandler}
+                  className="cursor-pointer"
+                />
+                <Label htmlFor="r2">Recruiter</Label>
               </div>
-            </form>
-
-            {/* Already Have an Account? */}
-            <p className="mt-4 text-center">
-              Already have an account?{" "}
-              <Link to="/login" className="text-indigo-500 hover:underline">
-                Login
-              </Link>
-            </p>
+            </RadioGroup>
           </div>
-        </div>
+          <div className="flex items-center gap-2">
+            <Label>Profile Photo</Label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={ChangeFilehandler}
+              className="cursor-pointer"
+            />
+          </div>
+          {loading ? (
+            <div className="flex items-center justify-center my-10">
+              <div className="spinner-border text-blue-600" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="block w-full py-3 my-3 text-white bg-primary hover:bg-primary/90 rounded-md"
+            >
+              Register
+            </button>
+          )}
+
+          <p className="text-gray-500 text-md my-2">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-700 font-semibold">
+              Login
+            </Link>
+          </p>
+        </form>
       </div>
     </div>
   );

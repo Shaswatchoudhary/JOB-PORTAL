@@ -7,8 +7,9 @@ import { Badge } from "../ui/badge";
 import AppliedJob from "./AppliedJob";
 import EditProfileModal from "./EditProfileModal";
 import { useSelector } from "react-redux";
-import useGetAppliedJobs from "../hooks/useGetAppliedJobs";
+import useGetAppliedJobs from "@/hooks/useGetAllAppliedJobs";
 
+ 
 const isResume = true;
 const Profile = () => {
   useGetAppliedJobs();
@@ -22,7 +23,10 @@ const Profile = () => {
         <div className="flex justify-between">
           <div className="flex items-center gap-5">
             <Avatar className="cursor-pointer h-24 w-24">
-              <AvatarImage src={user?.profile?.profilePhoto} alt="@shadcn" />
+              <AvatarImage
+                src={user?.profile?.profilePhoto}
+                alt="@shadcn"
+              />
             </Avatar>
             <div>
               <h1 className=" font-medium text-xl">{user?.fullname}</h1>

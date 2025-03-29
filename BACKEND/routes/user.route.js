@@ -5,26 +5,16 @@ import {
   register,
   updateProfile,
 } from "../controllers/user.controller.js";
-import { isAuthenticated } from "../middleware/isAuthenticated.js"; // ✅ Corrected Import
-import {
-  singleUpload,
-  uploadResume,
-  uploadProfilePhoto,
-  uploadProfileFiles,
-} from "../middleware/multer.js"; // ✅ Added uploadProfilePhoto & uploadProfileFiles
+import authenticateToken from "../middleware/isAuthenticated.js";
+import { singleUpload } from "../middleware/multer.js";
 
 const router = express.Router();
 
-// ✅ Register Route (with Profile Photo Upload)
-router.route("/register").post(uploadProfilePhoto, register);
-
-// ✅ Login & Logout Routes
+router.route("/register").post(singleUpload, register);
 router.route("/login").post(login);
 router.route("/logout").post(logout);
-
-// ✅ Profile Update Route (Uploads Both Resume & Profile Photo)
 router
   .route("/profile/update")
-  .post(isAuthenticated, uploadProfileFiles, updateProfile); // ✅ Now supports both `resume` and `profilePhoto`
+  .post(authenticateToken, singleUpload, updateProfile);
 
 export default router;

@@ -2,7 +2,7 @@ import React from "react";
 import { Badge } from "../ui/badge";
 import { useNavigate } from "react-router-dom";
 
-const JobCard = ({ job }) => {
+const JobCards = ({ job }) => {
   console.log(job);
   const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ const JobCard = ({ job }) => {
       </div>
       <div>
         <h2 className="font-bold text-lg my-2">{job.title}</h2>
-        <p className="text-sm text-gray-600">{job.description}</p>
+        <p className="text-sm text-gray-600">{job.descriptionz}</p>
       </div>
       <div className=" flex gap-2 items-center mt-4 ">
         <Badge className={" text-blue-600 font-bold"} variant={"ghost"}>
@@ -38,4 +38,4 @@ const JobCard = ({ job }) => {
   );
 };
 
-export default JobCard;
+export default JobCards;

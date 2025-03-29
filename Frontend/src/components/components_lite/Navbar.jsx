@@ -1,20 +1,22 @@
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { LogOut, User2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import { setUser } from "@/redux/authSlice";
 import { toast } from "sonner";
+import axios from "axios"; // Import axios
+import { setUser } from "@/redux/authSlice";
+import { USER_API_ENDPOINT } from "@/utils/data";
+
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const logoutHandler = async () => {
     try {
-      const res = await axios.post("http://localhost:5001/api/user/logout", {
+      const res = await axios.post(`${USER_API_ENDPOINT}/logout`, {
         withCredentials: true,
       });
       if (res && res.data && res.data.success) {
@@ -43,26 +45,45 @@ const Navbar = () => {
         </div>
         <div className="flex items-center gap-10">
           <ul className="flex font-medium items-center gap-6">
-            <li>
-              {" "}
-              <Link to={"/Home"}>Home</Link>
-            </li>
-            <li>
-              <Link to={"/Browse"}>Browse</Link>
-            </li>
-            <li>
-              <Link to={"/Jobs"}>Jobs</Link>
-            </li>
+            {user && user.role === "Recruiter" ? (
+              <>
+                <li>
+                  <Link to={"/admin/companies"}>Companies</Link>
+                </li>
+                <li>
+                  <Link to={"/admin/jobs"}>Jobs</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  {" "}
+                  <Link to={"/Home"}>Home</Link>
+                </li>
+                <li>
+                  {" "}
+                  <Link to={"/Browse"}>Browse</Link>{" "}
+                </li>
+                <li>
+                  {" "}
+                  <Link to={"/Jobs"}>Jobs</Link>
+                </li>
+                <li>
+                  {" "}
+                  <Link to={"/Creator"}>About</Link>
+                </li>
+              </>
+            )}
           </ul>
           {!user ? (
-            <div className="flex items-center gap-2">
+            <div className=" flex items-center gap-2">
               <Link to={"/login"}>
                 {" "}
                 <Button variant="outline">Login</Button>
               </Link>
               <Link to={"/register"}>
                 {" "}
-                <Button className="bg-red-600 hover:bg-red-700">
+                <Button className="bg-red-600  hover:bg-red-700">
                   Register
                 </Button>
               </Link>
@@ -72,40 +93,41 @@ const Navbar = () => {
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={user?.profile?.profilePhoto}
                     alt="@shadcn"
                   />
-                  <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-80">
                 <div className="flex items-center gap-4 space-y-2">
                   <Avatar className="cursor-pointer">
                     <AvatarImage
-                      src="https://github.com/shadcn.png"
+                      src={user?.profile?.profilePhoto}
                       alt="@shadcn"
                     />
-                    <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-medium">Shaswat Choudhary</h3>
-                    <p className="text-small text-muted-foreground">
-                      Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                    <h3 className="font-medium">{user?.fullname}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {user?.profile?.bio}
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col my-2 text-gray-600">
-                  <div className="flex w-fit items-center gap-2 cursor-pointer">
-                    <User2></User2>
-                    <Button variant="link">
-                      <Link to={"/profile"}>Profile</Link>
-                    </Button>
-                  </div>
+
+                <div className="flex flex-col my-2 text-gray-600  ">
+                  {user && user.role === "Student" && (
+                    <div className="flex w-fit items-center gap-2 cursor-pointer">
+                      <User2></User2>
+                      <Button variant="link">
+                        {" "}
+                        <Link to={"/Profile"}> Profile</Link>{" "}
+                      </Button>
+                    </div>
+                  )}
+
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut></LogOut>
                     <Button onClick={logoutHandler} variant="link">
-                      {" "}
-                      {/*``logoutHandler is  functional */}
                       Logout
                     </Button>
                   </div>
