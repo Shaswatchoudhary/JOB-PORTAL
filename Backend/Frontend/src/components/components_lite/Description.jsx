@@ -241,15 +241,15 @@ const Description = () => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 group">
-            <div className="flex items-center text-gray-700">
-            <IndianRupee size={16} className="mr-2 text-green-500" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Salary</p>
-                <p className="font-medium">{singleJob?.salary} LPA</p>
-              </div>
-            </div>
+           <div className="flex items-center space-x-3 group">
+             <div className="flex items-center text-gray-700">
+               <IndianRupee size={16} className="mr-2 text-green-500" />
+             </div>
+             <div>
+               <p className="text-sm text-gray-500">Salary</p>
+               <p className="font-medium">{singleJob?.salary} LPA</p>
+             </div>
+           </div>
 
             <div className="flex items-center space-x-3 group">
               <div className="p-2 bg-green-100 rounded-full text-green-600 group-hover:bg-green-200 transition-colors duration-300">
