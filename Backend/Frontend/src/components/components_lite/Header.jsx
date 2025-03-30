@@ -94,9 +94,9 @@ const Header = () => {
             No.1 Job Hunt Website
           </span>
 
-          <h2 className="text-5xl font-bold text-gray-800 py-4">
+          <h2 className="text-4xl font-bold text-white py-4">
             Search Apply & <br />
-            Get your <span className="text-[#6B3AC2]">Dream Job</span>
+            Get your <span className="text-[#FF6B6B]">Dream Job</span>
           </h2>
           <p>
             Start your hunt for the best, life-changing career opportunities
@@ -109,7 +109,7 @@ const Header = () => {
               placeholder="Find Your Dream Job"
               className="outline-none border-none w-full"
             />
-            <Button className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:from-indigo-600 hover:to-purple-500">
+            <Button className="rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-6 py-3 font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:from-cyan-500 hover:to-blue-600">
               <Search className="h-5 w-5 mr-2" />
               Search Jobs
             </Button>
