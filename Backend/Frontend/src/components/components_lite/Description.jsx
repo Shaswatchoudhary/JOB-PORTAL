@@ -7,6 +7,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setSingleJob } from "@/redux/jobSlice";
 import { toast } from "sonner";
+import { IndianRupee } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   Clock,
