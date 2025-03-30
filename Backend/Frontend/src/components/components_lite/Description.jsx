@@ -242,8 +242,8 @@ const Description = () => {
             </div>
 
             <div className="flex items-center space-x-3 group">
-              <div className="p-2 bg-orange-100 rounded-full text-orange-600 group-hover:bg-orange-200 transition-colors duration-300">
-                <DollarSign className="w-5 h-5" />
+            <div className="flex items-center text-gray-700">
+            <IndianRupee size={16} className="mr-2 text-green-500" />
               </div>
               <div>
                 <p className="text-sm text-gray-500">Salary</p>
