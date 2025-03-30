@@ -5,43 +5,43 @@ import { motion } from "framer-motion";
 
 const floatingLogos = [
   {
-    src: "/images/google.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
     alt: "Google",
   },
   {
-    src: "/images/facebook.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
     alt: "Facebook",
   },
   {
-    src: "/images/amazon.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
     alt: "Amazon",
   },
   {
-    src: "/images/twitter.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg",
     alt: "Twitter",
   },
   {
-    src: "/images/linkedin.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/7/7e/LinkedIn_Logo.svg",
     alt: "LinkedIn",
   },
   {
-    src: "/images/microsoft.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
     alt: "Microsoft",
   },
   {
-    src: "/images/youtube.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/6/64/YouTube_icon_dark.svg",
     alt: "YouTube",
   },
   {
-    src: "/images/apple.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Apple_logo_black.svg",
     alt: "Apple",
   },
   {
-    src: "/images/meta.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/d/db/Meta_Logo.svg",
     alt: "Meta",
   },
   {
-    src: "/images/netflix.png",
+    src: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Netflix-Logo-PMS.png",
     alt: "Netflix",
   },
 ];
@@ -94,9 +94,9 @@ const Header = () => {
             No.1 Job Hunt Website
           </span>
 
-          <h2 className="text-4xl font-bold text-white py-4">
+          <h2 className="text-5xl font-bold text-gray-800 py-4">
             Search Apply & <br />
-            Get your <span className="text-[#FF6B6B]">Dream Job</span>
+            Get your <span className="text-[#6B3AC2]">Dream Job</span>
           </h2>
           <p>
             Start your hunt for the best, life-changing career opportunities
@@ -109,7 +109,7 @@ const Header = () => {
               placeholder="Find Your Dream Job"
               className="outline-none border-none w-full"
             />
-            <Button className="rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-6 py-3 font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:from-cyan-500 hover:to-blue-600">
+            <Button className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:from-indigo-600 hover:to-purple-500">
               <Search className="h-5 w-5 mr-2" />
               Search Jobs
             </Button>
