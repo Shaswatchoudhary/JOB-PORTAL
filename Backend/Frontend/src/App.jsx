@@ -17,7 +17,6 @@ import AdminJobs from "./components/admincomponent/AdminJobs.jsx";
 import PostJob from "./components/admincomponent/PostJob";
 import Applicants from "./components/admincomponent/Applicants";
 import ProtectedRoute from "./components/admincomponent/ProtectedRoute";
-import Creator from "./components/creator/Creator.jsx";
 
 const appRouter = createBrowserRouter([
   { path: "/", element: <Home /> },
