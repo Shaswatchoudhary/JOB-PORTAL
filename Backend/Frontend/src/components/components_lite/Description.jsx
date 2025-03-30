@@ -145,13 +145,16 @@ const Description = () => {
                   <Briefcase className="w-4 h-4 mr-1" /> {singleJob?.position}{" "}
                   Open
                 </Badge>
-                <Badge
-                  className="bg-orange-100 text-orange-600 font-semibold hover:bg-orange-200 transition-colors duration-300"
-                  variant="outline"
-                >
-                  <DollarSign className="w-4 h-4 mr-1" /> {singleJob?.salary}{" "}
-                  LPA
-                </Badge>
+               <Badge
+                 className="bg-orange-100 text-orange-600 font-semibold hover:bg-orange-200 transition-colors duration-300"
+                 variant="outline"
+               >
+                 <div className="flex items-center text-gray-700">
+                   <IndianRupee size={16} className="mr-2 text-green-500" />
+                   {singleJob?.salary} LPA
+                 </div>
+               </Badge>
+                
                 <Badge
                   className="bg-purple-100 text-purple-600 font-semibold hover:bg-purple-200 transition-colors duration-300"
                   variant="outline"
