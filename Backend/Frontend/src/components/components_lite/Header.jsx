@@ -5,43 +5,43 @@ import { motion } from "framer-motion";
 
 const floatingLogos = [
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+    src: "/images/google.png",
     alt: "Google",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+    src: "/images/facebook.png",
     alt: "Facebook",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+    src: "/images/amazon.png",
     alt: "Amazon",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg",
+    src: "/images/twitter.png",
     alt: "Twitter",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/7/7e/LinkedIn_Logo.svg",
+    src: "/images/linkedin.png",
     alt: "LinkedIn",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+    src: "/images/microsoft.png",
     alt: "Microsoft",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/6/64/YouTube_icon_dark.svg",
+    src: "/images/youtube.png",
     alt: "YouTube",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Apple_logo_black.svg",
+    src: "/images/apple.png",
     alt: "Apple",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/d/db/Meta_Logo.svg",
+    src: "/images/meta.png",
     alt: "Meta",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Netflix-Logo-PMS.png",
+    src: "/images/netflix.png",
     alt: "Netflix",
   },
 ];
