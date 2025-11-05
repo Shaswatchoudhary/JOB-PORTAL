@@ -9,7 +9,7 @@ const TermsOfService = () => {
       id: 1,
       title: "Introduction",
       content:
-        "Welcome to [Your Website Name]. These Terms and Conditions govern your use of our website located at [Your Website URL]. By accessing or using our website, you agree to comply with these terms.",
+        "Welcome to Shaswat.com. These Terms and Conditions govern your use of our website located at [Your Website URL]. By accessing or using our website, you agree to comply with these terms.",
     },
     {
       id: 2,
@@ -33,25 +33,25 @@ const TermsOfService = () => {
       id: 5,
       title: "Intellectual Property",
       content:
-        "All content, trademarks, and other intellectual property on the website are owned by or licensed to [Your Website Name]. You may not reproduce, distribute, or create derivative works from any content without our express written permission.",
+        "All content, trademarks, and other intellectual property on the website are owned by or licensed to Shaswat.com. You may not reproduce, distribute, or create derivative works from any content without our express written permission.",
     },
     {
       id: 6,
       title: "Limitation of Liability",
       content:
-        "To the fullest extent permitted by law, [Your Website Name] shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising from your use of the website.",
+        "To the fullest extent permitted by law, Shaswat.com shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising from your use of the website.",
     },
     {
       id: 7,
       title: "Governing Law",
       content:
-        "These Terms and Conditions shall be governed by and construed in accordance with the laws of [Your Jurisdiction]. Any disputes arising in connection with these terms shall be subject to the exclusive jurisdiction of the courts of [Your Jurisdiction].",
+        "These Terms and Conditions shall be governed by and construed in accordance with the laws of India. Any disputes arising in connection with these terms shall be subject to the exclusive jurisdiction of the courts of India.",
     },
     {
       id: 8,
       title: "Contact Information",
       content:
-        "If you have any questions about these Terms and Conditions, please contact us at [Your Contact Information].",
+        "If you have any questions about these Terms and Conditions, please contact us at shaswat@jobportal.com.",
     },
   ];
 

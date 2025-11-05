@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const PrivacyPolicy = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -105,7 +105,7 @@ const PrivacyPolicy = () => {
       title: "Contact Us",
       content: {
         text: "If you have any questions about this Privacy Policy, please contact us at:",
-        email: "support@jobportal.com",
+        email: "shaswat@jobportal.com",
       },
       type: "contact",
     },
