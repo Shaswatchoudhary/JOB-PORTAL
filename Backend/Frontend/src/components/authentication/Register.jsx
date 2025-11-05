@@ -436,7 +436,7 @@ const Register = () => {
                   <Label className="text-gray-700 block mb-2">
                     Profile Photo (Optional)
                   </Label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition-colors duration-200">
+                  <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition-colors duration-200">
                     <div className="flex flex-col items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -453,22 +453,23 @@ const Register = () => {
                         />
                       </svg>
                       <div className="text-sm text-gray-600 mb-2">
-                      Drag and drop or click to upload (Optional)
+                        Drag and drop or click to upload
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        (Max file size: 5MB, Optional)
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-500">
-                      (Max file size: 5MB, Optional)
-                    </div>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={ChangeFilehandler}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                    </div>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={ChangeFilehandler}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                    />
                   </div>
                   {input.file && (
-                    <div className="text-sm text-gray-600 mt-2">
-                      Selected file: {input.file.name}
+                    <div className="mt-2 text-sm text-gray-600">
+                      Selected: {input.file.name}
                     </div>
                   )}
                 </motion.div>
