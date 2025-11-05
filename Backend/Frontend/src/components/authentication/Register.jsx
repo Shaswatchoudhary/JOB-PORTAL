@@ -20,8 +20,10 @@ const Register = () => {
     phoneNumber: "",
     pancard: "",
     adharcard: "",
-    file: "",
+    file: null,
   });
+  
+  const [errors, setErrors] = useState({});
 
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
@@ -40,14 +42,25 @@ const Register = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    
+    // Validate all steps before submission
+    const isStep1Valid = validateStep(1);
+    const isStep2Valid = validateStep(2);
+    const isStep3Valid = validateStep(3);
+    
+    if (!isStep1Valid || !isStep2Valid || !isStep3Valid) {
+      toast.error('Please fill in all required fields correctly');
+      return;
+    }
+    
     const formData = new FormData();
-    formData.append("fullname", input.fullname);
-    formData.append("email", input.email);
+    formData.append("fullname", input.fullname.trim());
+    formData.append("email", input.email.trim());
     formData.append("password", input.password);
-    formData.append("pancard", input.pancard);
-    formData.append("adharcard", input.adharcard);
+    formData.append("pancard", input.pancard.trim());
+    formData.append("adharcard", input.adharcard.trim());
     formData.append("role", input.role);
-    formData.append("phoneNumber", input.phoneNumber);
+    formData.append("phoneNumber", input.phoneNumber.trim());
     if (input.file) {
       formData.append("file", input.file);
     }
@@ -72,8 +85,41 @@ const Register = () => {
     }
   };
 
+  const validateStep = (step) => {
+    const newErrors = {};
+    
+    if (step === 1) {
+      if (!input.fullname.trim()) newErrors.fullname = 'Full name is required';
+      if (!input.email.trim()) {
+        newErrors.email = 'Email is required';
+      } else if (!/\S+@\S+\.\S+/.test(input.email)) {
+        newErrors.email = 'Email is invalid';
+      }
+      if (!input.password) {
+        newErrors.password = 'Password is required';
+      } else if (input.password.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      }
+    } else if (step === 2) {
+      if (!input.pancard.trim()) newErrors.pancard = 'PAN card number is required';
+      if (!input.adharcard.trim()) newErrors.adharcard = 'Aadhar card number is required';
+      if (!input.phoneNumber.trim()) {
+        newErrors.phoneNumber = 'Phone number is required';
+      } else if (!/^[0-9]{10}$/.test(input.phoneNumber.trim())) {
+        newErrors.phoneNumber = 'Invalid phone number';
+      }
+    } else if (step === 3) {
+      if (!input.role) newErrors.role = 'Please select a role';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const nextStep = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
+    if (validateStep(currentStep)) {
+      setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
+    }
   };
 
   const prevStep = () => {
@@ -171,42 +217,54 @@ const Register = () => {
                 animate="visible"
               >
                 <motion.div variants={childVariants} className="mb-4">
-                  <Label className="text-gray-700 block mb-1.5">
-                    Full Name
-                  </Label>
+                  <div className="flex justify-between items-center">
+                    <Label className="text-gray-700 block mb-1.5">
+                      Full Name <span className="text-red-500">*</span>
+                    </Label>
+                    {errors.fullname && <span className="text-red-500 text-xs">{errors.fullname}</span>}
+                  </div>
                   <Input
                     type="text"
                     value={input.fullname}
                     name="fullname"
                     onChange={changeEventHandler}
                     placeholder="John Doe"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                    className={`${errors.fullname ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
                   />
                 </motion.div>
 
                 <motion.div variants={childVariants} className="mb-4">
-                  <Label className="text-gray-700 block mb-1.5">
-                    Email Address
-                  </Label>
+                  <div className="flex justify-between items-center">
+                    <Label className="text-gray-700 block mb-1.5">
+                      Email Address <span className="text-red-500">*</span>
+                    </Label>
+                    {errors.email && <span className="text-red-500 text-xs">{errors.email}</span>}
+                  </div>
                   <Input
                     type="email"
                     value={input.email}
                     name="email"
                     onChange={changeEventHandler}
                     placeholder="johndoe@example.com"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                    className={`${errors.email ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
                   />
                 </motion.div>
 
                 <motion.div variants={childVariants} className="mb-4">
-                  <Label className="text-gray-700 block mb-1.5">Password</Label>
+                  <div className="flex justify-between items-center">
+                    <Label className="text-gray-700 block mb-1.5">
+                      Password <span className="text-red-500">*</span>
+                    </Label>
+                    {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
+                  </div>
                   <Input
                     type="password"
                     value={input.password}
                     name="password"
+                    autoComplete="new-password"
                     onChange={changeEventHandler}
                     placeholder="••••••••"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                    className={`${errors.password ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
                   />
                   <p className="text-xs text-gray-500 mt-1">
                     Must be at least 8 characters
@@ -223,44 +281,53 @@ const Register = () => {
                 animate="visible"
               >
                 <motion.div variants={childVariants} className="mb-4">
-                  <Label className="text-gray-700 block mb-1.5">
-                    PAN Card Number
-                  </Label>
+                  <div className="flex justify-between items-center">
+                    <Label className="text-gray-700 block mb-1.5">
+                      PAN Card Number <span className="text-red-500">*</span>
+                    </Label>
+                    {errors.pancard && <span className="text-red-500 text-xs">{errors.pancard}</span>}
+                  </div>
                   <Input
                     type="text"
                     value={input.pancard}
                     name="pancard"
                     onChange={changeEventHandler}
                     placeholder="ABCDE1234F"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                    className={`${errors.pancard ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
                   />
                 </motion.div>
 
                 <motion.div variants={childVariants} className="mb-4">
-                  <Label className="text-gray-700 block mb-1.5">
-                    Aadhar Card Number
-                  </Label>
+                  <div className="flex justify-between items-center">
+                    <Label className="text-gray-700 block mb-1.5">
+                      Aadhar Card Number <span className="text-red-500">*</span>
+                    </Label>
+                    {errors.adharcard && <span className="text-red-500 text-xs">{errors.adharcard}</span>}
+                  </div>
                   <Input
                     type="text"
                     value={input.adharcard}
                     name="adharcard"
                     onChange={changeEventHandler}
                     placeholder="1234 5678 9012"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                    className={`${errors.adharcard ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
                   />
                 </motion.div>
 
                 <motion.div variants={childVariants} className="mb-4">
-                  <Label className="text-gray-700 block mb-1.5">
-                    Phone Number
-                  </Label>
+                  <div className="flex justify-between items-center">
+                    <Label className="text-gray-700 block mb-1.5">
+                      Phone Number <span className="text-red-500">*</span>
+                    </Label>
+                    {errors.phoneNumber && <span className="text-red-500 text-xs">{errors.phoneNumber}</span>}
+                  </div>
                   <Input
                     type="tel"
                     value={input.phoneNumber}
                     name="phoneNumber"
                     onChange={changeEventHandler}
-                    placeholder="+91 9876543210"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                    placeholder="9876543210"
+                    className={`${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
                   />
                 </motion.div>
               </motion.div>
@@ -274,9 +341,12 @@ const Register = () => {
                 animate="visible"
               >
                 <motion.div variants={childVariants} className="mb-6">
-                  <Label className="text-gray-700 block mb-3">
-                    I am registering as a:
-                  </Label>
+                  <div className="flex justify-between items-center mb-3">
+                    <Label className="text-gray-700 block">
+                      I am registering as a: <span className="text-red-500">*</span>
+                    </Label>
+                    {errors.role && <span className="text-red-500 text-xs">{errors.role}</span>}
+                  </div>
                   <div className="flex gap-6 mt-2">
                     <div className="flex-1">
                       <div
@@ -364,7 +434,7 @@ const Register = () => {
 
                 <motion.div variants={childVariants} className="mb-6">
                   <Label className="text-gray-700 block mb-2">
-                    Profile Photo
+                    Profile Photo (Optional)
                   </Label>
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition-colors duration-200">
                     <div className="flex flex-col items-center">
@@ -383,11 +453,11 @@ const Register = () => {
                         />
                       </svg>
                       <div className="text-sm text-gray-600 mb-2">
-                        Drag and drop or click to upload
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        (Max file size: 5MB)
-                      </div>
+                      Drag and drop or click to upload (Optional)
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      (Max file size: 5MB, Optional)
+                    </div>
                       <Input
                         type="file"
                         accept="image/*"

@@ -9,7 +9,7 @@ const TermsOfService = () => {
       id: 1,
       title: "Introduction",
       content:
-        "Welcome to Shaswat.com. These Terms and Conditions govern your use of our website located at [Your Website URL]. By accessing or using our website, you agree to comply with these terms.",
+        "Welcome to Shaswat.com. These Terms and Conditions govern your use of our website located at https://shaswat.com/. By accessing or using our website, you agree to comply with these terms.",
     },
     {
       id: 2,
